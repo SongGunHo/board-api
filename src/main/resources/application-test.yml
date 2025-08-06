@@ -1,0 +1,10 @@
+spring:
+  datasource:
+    driverClassName: com.h2.Driver
+    url: jdbc:h2:mem:test
+    username: se
+    password:
+
+  jpa:
+    hibernate:
+      ddlAuto: create

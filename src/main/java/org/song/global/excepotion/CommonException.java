@@ -1,0 +1,30 @@
+package org.song.global.excepotion;
+
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.http.HttpStatus;
+
+import java.util.List;
+import java.util.Map;
+
+
+@Getter
+@Setter
+public class CommonException extends RuntimeException{
+
+    private final HttpStatus status;
+    private Map<String , List<String>> errorMessge;
+    private boolean errorCode;
+
+
+    public CommonException(String message , HttpStatus status){
+        super(message);
+        this.status= status;
+    }
+
+    public CommonException(Map<String, List<String>> errorMessge, HttpStatus status){
+        this.errorMessge = errorMessge;
+        this.status = status;
+    }
+
+}

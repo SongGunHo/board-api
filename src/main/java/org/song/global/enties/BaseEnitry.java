@@ -1,6 +1,5 @@
 package org.song.global.enties;
 
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
@@ -15,7 +14,8 @@ import java.time.LocalDateTime;
 @Data
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
-public abstract class BaseEntity {
+public class BaseEnitry {
+
 
     @CreatedDate
     @Column(updatable = false)

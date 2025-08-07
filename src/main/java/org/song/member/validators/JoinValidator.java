@@ -2,6 +2,8 @@ package org.song.member.validators;
 
 
 import lombok.RequiredArgsConstructor;
+import org.song.global.validators.MobileValidator;
+import org.song.global.validators.PasswordValidator;
 import org.song.member.controller.RequestJoin;
 import org.song.member.repository.MemberRepository;
 import org.springframework.context.annotation.Lazy;
@@ -11,7 +13,7 @@ import org.springframework.validation.Validator;
 @Lazy
 @Component
 @RequiredArgsConstructor
-public class JoinValidator implements Validator {
+public class JoinValidator implements Validator , PasswordValidator, MobileValidator {
 
     private final  MemberRepository repository;
 
@@ -29,9 +31,30 @@ public class JoinValidator implements Validator {
         /*
         *  1. 이메일 중복 여부
         *  2. 비밀 번호 확인 일치 여부
-        *   3. 휴대 번호 형식 검증
+        *  3. 비빌번호 확인 일치 여부
+        *  4. 휴대 번호 형식 검증
         *
         * */
-
+        //*  1. 이메일 중복 여부
+        RequestJoin requestJoin = (RequestJoin) target;
+        if(repository.existsByEmail(requestJoin.getEmail())){
+            errors.rejectValue("email", "Duplicated");
+        }
+        //2. 비밀 번호 확인 일치 여부
+        String password = requestJoin.getPassword();
+        String confirmPassword = requestJoin.getConfirmPassword();
+        if(!checkAlpha(password, false) || !checkNumber(password)){
+            errors.rejectValue("password", "Complexity");
+        }
+        //*   3. 비빌번호 확인 일치 여부
+        if(!password.equals(confirmPassword)){
+            errors.rejectValue("confirmPassword", "Mismatch");
+        }
+        //. 휴대 번호 형식 검증
+        String mobile = requestJoin.getMobile();
+        if(!checkMobile(mobile)){
+            errors.rejectValue("mobile", "Mobile");
+        }
     }
+
 }

@@ -2,7 +2,7 @@ package org.song.member.entityes;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import org.song.global.enties.BaseEntity;
+import org.song.global.enties.BaseEnitry;
 import org.song.member.constants.Authority;
 
 import java.io.Serializable;
@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
         @Index(name="idx_member_name", columnList = "name"),
         @Index(name="idx_member_mobile", columnList = "mobile"),
 })
-public class Member extends BaseEntity implements Serializable {
+public class Member extends BaseEnitry implements Serializable {
     @Id
     @GeneratedValue
     private Long seq;

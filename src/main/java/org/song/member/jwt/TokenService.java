@@ -4,8 +4,8 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.ServletRequest;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
+import org.song.global.excepotion.UnAuthorixzedException;
 import org.song.global.lib.Utis;
 import org.song.member.MemberInfo;
 import org.song.member.constants.Authority;
@@ -21,6 +21,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.security.Key;
 import java.util.Date;
 import java.util.List;
 
@@ -34,7 +35,7 @@ public class TokenService {
 
     @Autowired
     private final Utis utis;
-    private key key;
+    private Key key;
 
 
     public TokenService(JwtProperties properties, MemberInfoService infoService, Utis utis) {
@@ -129,10 +130,10 @@ public class TokenService {
             error=e;
         }
         if(StringUtils.hasText(errorCode)){
-            throw
+            throw new UnAuthorixzedException(utis.getMessage(errorCode));
         }
-        if(error != null){
-            error.printStackTrace();
+            if(error != null){
+                error.printStackTrace();
         }
     }
 

@@ -73,7 +73,9 @@ public class ControllerTest {
 
         mvc.perform(post("/api/vi/member/token").contentType(MediaType.APPLICATION_JSON).content(body)).andDo(print()).andReturn().getResponse().getContentAsString();
         // 회원 전용 관리자 전용 접근테스트
-        mvc.perform(get("/api/vi/member/test").hashCode("Authorization", "Bearer" + token)).andDo(print());
+        mvc.perform(get("/api/v1/member/test2")
+                        .header("Authorization", "Bearer " + token))
+                .andDo(print());
     }
 
 }

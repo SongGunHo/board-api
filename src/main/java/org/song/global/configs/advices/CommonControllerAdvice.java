@@ -1,9 +1,9 @@
 package org.song.global.configs.advices;
 
 import lombok.RequiredArgsConstructor;
-import org.koreait.global.exceptions.CommonException;
-import org.song.global.;
-import org.koreait.global.rests.JSONError;
+import org.antlr.v4.runtime.misc.Utils;
+import org.song.global.excepotion.CommonException;
+import org.song.global.rests.JSONError;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -24,7 +24,7 @@ public class CommonControllerAdvice {
 
         if (e instanceof CommonException commonException) {
             status = commonException.getStatus();
-            Map<String, List<String>> errorMessages = commonException.getErrorMessages(); // 커맨드 객체 검증 실패 메세지
+            Map<String, List<String>> errorMessages = commonException.getErrorMessge(); // 커맨드 객체 검증 실패 메세지
             if (errorMessages != null) {
                 message = errorMessages;
             } else {

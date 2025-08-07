@@ -1,4 +1,4 @@
-package org.song.lib;
+package org.song.global.lib;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;

@@ -3,18 +3,22 @@ package org.song.member.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.song.member.services.JoinService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static java.lang.reflect.Array.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@ActiveProfiles({""})
 public class ControllerTest {
 
     @Autowired
@@ -22,6 +26,9 @@ public class ControllerTest {
 
     @Autowired
     private ObjectMapper om;
+
+    @Autowired
+    private JoinService service;
 
     void init() throws Exception{
         RequestJoin form = new RequestJoin();
@@ -64,7 +71,9 @@ public class ControllerTest {
         form.setPassword("12345678");
         String body = om.writeValueAsString(form);
 
-        mvc.perform(post("/api/vi/member/token").contentType(MediaType.APPLICATION_JSON).content(body)).andDo(print());
+        mvc.perform(post("/api/vi/member/token").contentType(MediaType.APPLICATION_JSON).content(body)).andDo(print()).andReturn().getResponse().getContentAsString();
+        // 회원 전용 관리자 전용 접근테스트
+        mvc.perform(get("/api/vi/member/test").hashCode("Authorization", "Bearer" + token)).andDo(print());
     }
 
 }

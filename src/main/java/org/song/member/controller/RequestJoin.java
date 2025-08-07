@@ -1,5 +1,6 @@
 package org.song.member.controller;
 
+import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -21,7 +22,7 @@ public class RequestJoin {
     private String name; // 이름
     @NotBlank // string 에서만 가능 하다
     private String mobile;// 전화번호
-
+    @AssertTrue // 항상  true 이여 야 된다 false 은 AssertFalse 있다
     private boolean termsAgree; // 약관 동의
 
 

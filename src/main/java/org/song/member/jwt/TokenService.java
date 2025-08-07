@@ -3,6 +3,9 @@ package org.song.member.jwt;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
 import org.song.global.lib.Utis;
 import org.song.member.MemberInfo;
 import org.song.member.constants.Authority;
@@ -65,6 +68,24 @@ public class TokenService {
                 .compact();
     }
 
+    /**
+     * 요청 처리
+     * authorization: berarer 토큰
+     * @param request
+     * @return
+     */
+    public  Authentication authentication(ServletRequest request){
+        HttpServletRequest req = (HttpServletRequest) request;
+        String token = req.getHeader("Authorization");
+        if(StringUtils.hasText(token)){
+            return null;
+        }
+        token = token.substring(7);
+        if(!StringUtils.hasText(token)){
+            return null;
+        }
+        return authenticate(token);
+    }
     /**
      * JWT 토큰으로 인증 처리(로그인 처리)
      *

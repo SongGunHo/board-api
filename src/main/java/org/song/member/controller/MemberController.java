@@ -34,4 +34,15 @@ public class MemberController {
         }
         service.process(form);
     }
+
+    /**
+     * 회원 계정 (이메일 비밀 번호) 으로 jwt 토큰 발급
+     *
+     *
+     * @return
+     */
+    @GetMapping("/token")
+    public String token (){
+
+    }
 }

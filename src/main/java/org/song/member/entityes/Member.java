@@ -43,4 +43,7 @@ public class Member extends BaseEnitry implements Serializable {
 
     private LocalDateTime expired; // 계정 만료 일자, null이면 만료
 
+
+    private LocalDateTime credentialChangedAt; // 비밀번호 변경 일시
 }
+

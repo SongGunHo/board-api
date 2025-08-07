@@ -7,11 +7,11 @@ import org.springframework.context.support.ResourceBundleMessageSource;
 
 @Configuration
 public class MessagSourceConfig {
-    @Bean
 
+    @Bean
     public MessageSource messageSource(){
         ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
-        messageSource.addBasenames("message.common, message.errors, message.validator");
+        messageSource.addBasenames("message.commons, message.errors, message.validations");
         messageSource.setDefaultEncoding("UTF-8");
         messageSource.setUseCodeAsDefaultMessage(true);
 

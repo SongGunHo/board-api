@@ -33,7 +33,10 @@ public class ControllerTest {
         form.setName("사용자01");
         form.setMobile("01022223333");
         form.setTermsAgree(true);
-        mvc.perform(post("/api/vi/member").contentType(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isCreated());
+
+        String body = om.writeValueAsString(form);
+
+        mvc.perform(post("/api/vi/member").contentType(MediaType.APPLICATION_JSON).content(body)).andDo(print()).andExpect(status().isCreated());
 
     }
 

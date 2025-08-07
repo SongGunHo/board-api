@@ -41,5 +41,5 @@ public class Member extends BaseEntity implements Serializable {
 
     private boolean locked; // 계정 중지 상태인지
 
-    private LocalDateTime expired; // 계정 만료 일자, null이면 만료 X
+    private LocalDateTime expired; // 계정 만료 일자, null이면 만료
 

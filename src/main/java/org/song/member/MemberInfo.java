@@ -27,12 +27,12 @@ public class MemberInfo implements UserDetails{
 
     @Override
     public boolean isAccountNonExpired() {
-        return UserDetails.super.isAccountNonExpired();
+        return member != null && member.getExpired() == null;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return UserDetails.super.isAccountNonLocked();
+        return member != null && member.isLocked();
     }
 
     @Override
@@ -52,6 +52,6 @@ public class MemberInfo implements UserDetails{
 
     @Override
     public String getUsername() {
-        return "";
+        return member == null ? null : member.getName();
     }
 }

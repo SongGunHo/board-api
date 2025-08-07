@@ -8,5 +8,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 @EnableJpaAuditing
 @EnableScheduling
+
+
 public class MvcConfig implements WebMvcConfigurer {
 }

@@ -1,17 +1,24 @@
 package org.song.member.jwt;
 
-import io.jsonwebtoken.Jwt;
+import io.jsonwebtoken.*;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
+import org.song.global.lib.Utis;
 import org.song.member.MemberInfo;
+import org.song.member.constants.Authority;
 import org.song.member.entityes.Member;
 import org.song.member.services.MemberInfoService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
-import java.security.Key;
-import java.util.Base64;
+import java.util.Date;
+import java.util.List;
 
 @Service
 @Lazy
@@ -20,41 +27,90 @@ public class TokenService {
 
     private final JwtProperties properties;
     private final MemberInfoService service;
-    private final key key;
+
+    @Autowired
+    private final Utis utis;
+    private key key;
 
 
-    public TokenService(JwtProperties properties , MemberInfoService service){
+    public TokenService(JwtProperties properties, MemberInfoService infoService) {
         this.properties = properties;
-        this.service = service;
+        this.service = infoService;
 
-        byte[] keyBytes = Base64.Decoder.decoder(properties.getSecret());
-        this.key = Key.hmacChaKeyFor(keyBytes);
+
+        byte[] keyBytes = Decoders.BASE64.decode(properties.getSecret());
+        this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
     /**
      * JWT 토큰 발급
      *
+     * @param email
+     * @return
      */
-     public String create(String email){
+    public String create(String email) {
 
-        MemberInfo memberInfo=(MemberInfo) service.loadUserByUsername(email);
+        MemberInfo userDetails = (MemberInfo)service.loadUserByUsername(email);
+        Member member = userDetails.getMember();
 
-         Member member = memberInfo.getMember();
+        Date date = new Date(new Date().getTime() + properties.getValidTime() * 1000);
 
-
-         return null;
-     }
+        return Jwts.builder()
+                .setSubject(member.getEmail())
+                .claim("authority", member.getAuthority())
+                .signWith(key, SignatureAlgorithm.HS512)
+                .setExpiration(date)
+                .compact();
+    }
 
     /**
-     * JWT 토킁으로 인증 처리 (로그인 처리)
-     * 요청 해더
-     *  Authorization:  Bearer : 토큰
+     * JWT 토큰으로 인증 처리(로그인 처리)
+     *
+     * 요청헤더
+     *      Authorization: Bearer 토큰
      * @param token
      * @return
      */
+    public Authentication authenticate(String token) {
+        // 토큰 유효성 검사
+        validate(token);
+        Claims claims = Jwts.parser().setSigningKey(key).build().parseClaimsJws(token).getPayload();
+        String email = claims.getSubject();
+        Authority authority = Authority.valueOf((String)claims.get("authority"));
 
-     public Authentication authentication(String token){
-          return null;
-     }
+        MemberInfo userDetails =(MemberInfo) service.loadUserByUsername(email);
+        List<SimpleGrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(authority.name()));
+        userDetails.getMember().setAuthority(authority);
+
+        Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, authorities);
+
+        return null;
+    }
+
+    public void validate(String token){
+        String errorCode = null;
+        Exception error = null;
+        try{
+        Jwts.parser().setSigningKey(key).build().parseClaimsJws(token).getPayload();
+        } catch (ExpiredJwtException e){// 토큰 만료
+            errorCode = "JWT.expired";
+            error = e;
+        }catch (MalformedJwtException | SecurityException e) { // jwt 형식 오류
+            errorCode = "JWT.malformed";
+            error=e;
+        }catch (UnsupportedJwtException e ){
+            errorCode = "JWT.unsupported";
+            error=e;
+        }catch (Exception e){
+            errorCode = "JWT.error";
+            error=e;
+        }
+        if(StringUtils.hasText(errorCode)){
+            throw
+        }
+        if(error != null){
+            error.printStackTrace();
+        }
+    }
 
 }

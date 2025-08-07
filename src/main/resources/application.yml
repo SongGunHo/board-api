@@ -56,8 +56,9 @@ springdoc:
     doc-expansion: none
   paths-to-match:
     - /api/v1/**
+
   #jwt 설정
-  member:
-    jwt:
-      secret: ${jwt.secret}
-      walidTime: ${}
+member:
+  jwt:
+    secret: ${jwt.secret}
+    walidTime: ${}

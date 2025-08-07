@@ -38,6 +38,5 @@ public class TokenServiceTest {
     void jwtCreationTest(){
         String token = tokenService.create("user01@test.org");
         System.out.println(token);
-
     }
 }

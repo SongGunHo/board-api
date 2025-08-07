@@ -19,8 +19,9 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf(c -> c.disable()).sessionManagement(c-> c.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        http.csrf(c -> c.disable())
                 .addFilterBefore(loginFilter, UsernamePasswordAuthenticationFilter.class)
+                .sessionManagement(c -> c.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .exceptionHandling(c -> {
                     c.authenticationEntryPoint((req, res, e) -> {
                         res.sendError(HttpServletResponse.SC_UNAUTHORIZED);
@@ -28,12 +29,14 @@ public class SecurityConfig {
                     c.accessDeniedHandler((req, res, e) -> {
                         res.sendError(HttpServletResponse.SC_UNAUTHORIZED);
                     });
+                })
+                .authorizeHttpRequests(c -> {
+                    c.anyRequest().permitAll();
                 });
-        .authorizeHttpRequests
-
 
         return http.build();
     }
+
 
     @Bean
     public PasswordEncoder passwordEncoder(){

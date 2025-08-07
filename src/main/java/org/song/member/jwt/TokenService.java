@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -33,9 +34,10 @@ public class TokenService {
     private key key;
 
 
-    public TokenService(JwtProperties properties, MemberInfoService infoService) {
+    public TokenService(JwtProperties properties, MemberInfoService infoService, Utis utis) {
         this.properties = properties;
         this.service = infoService;
+        this.utis = utis;
 
 
         byte[] keyBytes = Decoders.BASE64.decode(properties.getSecret());
@@ -83,8 +85,8 @@ public class TokenService {
         userDetails.getMember().setAuthority(authority);
 
         Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, authorities);
-
-        return null;
+        SecurityContextHolder.getContext().setAuthentication(authentication); // 인증 처리(로그인 처리)
+        return authentication;
     }
 
     public void validate(String token){

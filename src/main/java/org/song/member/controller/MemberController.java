@@ -7,8 +7,10 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.song.global.excepotion.BadRequestException;
 import org.song.global.lib.Utis;
+import org.song.member.jwt.TokenService;
 import org.song.member.services.JoinService;
 import org.song.member.validators.JoinValidator;
+import org.song.member.validators.TokenValidator;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +23,8 @@ public class MemberController {
     private final JoinService service;
     private final JoinValidator validator;
     private final Utis utis;
+    private final TokenValidator token;
+    private final TokenService tos;
 
     // 회원 가입
     @Operation(summary = "회원 가입",  method = "Post")
@@ -42,7 +46,11 @@ public class MemberController {
      * @return
      */
     @GetMapping("/token")
-    public String token (){
+    public String token (@Valid @RequestBody RequestToken form , Errors errors){
+        token.validate(form, errors);
+        if(errors.hasErrors()){
+            throw new BadRequestException(utis.getErrorMessages(errors));
+        }
 
     }
 }

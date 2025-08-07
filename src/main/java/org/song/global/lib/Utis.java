@@ -2,12 +2,12 @@ package org.song.global.lib;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.validator.spi.messageinterpolation.LocaleResolver;
 import org.springframework.context.MessageSource;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
+import org.springframework.web.servlet.LocaleResolver;
 
 import java.util.Arrays;
 import java.util.List;
@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 public class Utis {
     private final MessageSource messageSource;
     private final HttpServletRequest request;
-    private final LocaleResolver  localeResolver;
+    private final LocaleResolver localeResolver;
 
     /**
      * 메세지를 코드로 조회

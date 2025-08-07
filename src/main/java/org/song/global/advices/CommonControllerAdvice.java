@@ -1,8 +1,8 @@
-package org.song.global.configs.advices;
+package org.song.global.advices;
 
 import lombok.RequiredArgsConstructor;
-import org.antlr.v4.runtime.misc.Utils;
 import org.song.global.excepotion.CommonException;
+import org.song.global.lib.Utis;
 import org.song.global.rests.JSONError;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,9 +13,10 @@ import java.util.List;
 import java.util.Map;
 
 @RequiredArgsConstructor
-@RestControllerAdvice("org.koreait")
+@RestControllerAdvice("org.song")
 public class CommonControllerAdvice {
-    private final Utils utils;
+
+    private final Utis utis;
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<JSONError> errorHandler(Exception e) {
@@ -30,7 +31,7 @@ public class CommonControllerAdvice {
             } else {
                 // 에러 코드로 관리되는 문구인 경우
                 if (commonException.isErrorCode()) {
-                    message = utils.getMessage((String)message);
+                    message = utis.getMessage((String) message);
                 }
             }
         }

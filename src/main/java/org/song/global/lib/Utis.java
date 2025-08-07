@@ -2,7 +2,7 @@ package org.song.global.lib;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.apache.tomcat.util.descriptor.LocalResolver;
+import org.hibernate.validator.spi.messageinterpolation.LocaleResolver;
 import org.springframework.context.MessageSource;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.stereotype.Component;
@@ -18,18 +18,20 @@ import java.util.stream.Collectors;
 @Component
 @RequiredArgsConstructor
 public class Utis {
-    private final MessageSource source;
+    private final MessageSource messageSource;
     private final HttpServletRequest request;
-    private final LocalResolver resolver;
+    private final LocaleResolver  localeResolver;
 
-    /*
-    * 메세지를 코드로 조회
-    *
-    * */
+    /**
+     * 메세지를 코드로 조회
+     *
+     * @param code
+     * @return
+     */
     public String getMessage(String code) {
-        Locale locale = resolver.resolveLocale(request);
+        Locale locale = localeResolver.resolveLocale(request);
 
-        return source.getMessage(code, null, locale);
+        return messageSource.getMessage(code, null, locale);
     }
 
     public List<String> getMessages(String[] codes) {
@@ -70,5 +72,4 @@ public class Utis {
 
         return messages;
     }
-
 }

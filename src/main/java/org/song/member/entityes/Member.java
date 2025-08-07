@@ -1,5 +1,6 @@
 package org.song.member.entityes;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.song.global.enties.BaseEnitry;
@@ -24,6 +25,7 @@ public class Member extends BaseEnitry implements Serializable {
     @Column(length = 75, unique = true, nullable = false)
     private String email;
 
+    @JsonIgnore
     @Column(length = 65)
     private String password;
 

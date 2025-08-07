@@ -5,7 +5,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @Data
 @ConfigurationProperties(prefix = "member.jwt")
-public class JwtProprites {
+public class JwtProperties {
     private String secret;
     private int validTime;
 }

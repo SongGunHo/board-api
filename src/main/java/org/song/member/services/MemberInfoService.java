@@ -1,6 +1,7 @@
 package org.song.member.services;
 
 import lombok.RequiredArgsConstructor;
+import org.song.member.MemberInfo;
 import org.song.member.entityes.Member;
 import org.song.member.repository.MemberRepository;
 import org.springframework.context.annotation.Lazy;
@@ -20,6 +21,6 @@ public class MemberInfoService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Member member = repository.findByEmail(username).orElseThrow(()-> new UsernameNotFoundException(username));
-        return null;
+        return MemberInfo.builder().member(member).build();
     }
 }

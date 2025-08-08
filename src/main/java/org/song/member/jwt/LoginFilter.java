@@ -6,11 +6,12 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.song.global.excepotion.UnAuthorixzedException;
+import org.song.global.excepotion.UnAuthorizedException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
 
 import java.io.IOException;
+
 @Component
 @RequiredArgsConstructor
 public class LoginFilter extends GenericFilterBean {
@@ -19,15 +20,14 @@ public class LoginFilter extends GenericFilterBean {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        try {
-            service.authenticate(request);
+    try {
+        service.authentication(request);
+    } catch (UnAuthorizedException e) {
+        HttpServletResponse res = (HttpServletResponse) response;
+        res.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
 
-        }catch (UnAuthorixzedException e){
-            HttpServletResponse res = (HttpServletResponse) response;
-            res.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
-            e.printStackTrace();
-        }
-
-        chain.doFilter(request, response);
+        e.printStackTrace();
     }
+        chain.doFilter(request, response);
 }
+    }

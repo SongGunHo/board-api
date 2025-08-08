@@ -12,7 +12,6 @@ import org.song.member.services.JoinService;
 import org.song.member.validators.JoinValidator;
 import org.song.member.validators.TokenValidator;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
@@ -55,15 +54,4 @@ public class MemberController {
         return tos.create(form.getEmail());
     }
 
-    @PreAuthorize("isAuthenticated()")
-    @GetMapping("/test1")
-    public void test1 (){
-        System.out.println("로그인 시 접근 가능  -test1" );
-    }
-
-    @PreAuthorize("hasAnyAuthority('ADMIN')")
-    @GetMapping("/test2")
-    public void test2 (){
-        System.out.println("관리자 만 접근 가능 -test2");
-    }
 }

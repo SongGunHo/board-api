@@ -10,8 +10,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.util.StringUtils;
 
-import static java.lang.reflect.Array.get;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -22,60 +23,65 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class ControllerTest {
 
     @Autowired
-    private MockMvc mvc;
+    private MockMvc mockMvc;
 
     @Autowired
     private ObjectMapper om;
 
     @Autowired
-    private JoinService service;
+    private JoinService joinService;
 
-    void init() throws Exception{
+    @Test
+    @DisplayName("회원가입 컨트롤러 테스트")
+    void joinTest() throws Exception {
+
         RequestJoin form = new RequestJoin();
         form.setEmail("user01@test.org");
-        form.setPassword("123456");
-        form.setConfirmPassword(form.getConfirmPassword());
+        form.setPassword("_aA123456");
+        form.setConfirmPassword(form.getPassword());
+        form.setMobile("01010001000");
         form.setName("사용자01");
-        form.setMobile("01022223333");
         form.setTermsAgree(true);
+
+        String body = om.writeValueAsString(form);
+
+        mockMvc.perform(post("/api/v1/member")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(body))
+                .andDo(print())
+                .andExpect(status().isCreated());
+    }
+
+    @Test
+    @DisplayName("이메일, 비밀번호로 토큰 발급 테스트")
+    void tokenCreationTest() throws Exception {
+
+        RequestJoin form = new RequestJoin();
+        form.setEmail("user01@test.org");
+        form.setPassword("_aA123456");
+        form.setConfirmPassword(form.getPassword());
+        form.setMobile("01010001000");
+        form.setName("사용자01");
+        form.setTermsAgree(true);
+        joinService.process(form);
 
         RequestToken form2 = new RequestToken();
-        form.setEmail("user01@test.org");
-        form.setPassword("12345678");
-        String body = om.writeValueAsString(form);
+        form2.setEmail("user01@test.org");
+        form2.setPassword("_aA123456");
+        String body = om.writeValueAsString(form2);
+
+        String token = mockMvc.perform(post("/api/v1/member/token")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(body))
+                .andDo(print())
+                .andReturn()
+                .getResponse().getContentAsString(); // 응답 body 데이터를 반환
+
+        assertTrue(StringUtils.hasText(token));
+//        // 회원전용, 관리자 전용 접근 테스트
+//        mockMvc.perform(get("/api/v1/member/test1")
+//                .header("Authorization", "Bearer " + token))
+//                .andDo(print());
 
     }
-
-    @Test
-    @DisplayName("회원 가입 컨트로러 테스트")
-    void test() throws Exception{
-        RequestJoin form = new RequestJoin();
-        form.setEmail("user01@test.org");
-        form.setPassword("123456");
-        form.setConfirmPassword(form.getConfirmPassword());
-        form.setName("사용자01");
-        form.setMobile("01022223333");
-        form.setTermsAgree(true);
-
-        String body = om.writeValueAsString(form);
-
-        mvc.perform(post("/api/vi/member").contentType(MediaType.APPLICATION_JSON).content(body)).andDo(print()).andExpect(status().isCreated());
-
-    }
-
-    @Test
-    @DisplayName("이메일 비밀 번호 토큰 발급 테스트 ")
-    void test2() throws Exception {
-        RequestToken form = new RequestToken();
-        form.setEmail("user01@test.org");
-        form.setPassword("12345678");
-        String body = om.writeValueAsString(form);
-
-        mvc.perform(post("/api/vi/member/token").contentType(MediaType.APPLICATION_JSON).content(body)).andDo(print()).andReturn().getResponse().getContentAsString();
-        // 회원 전용 관리자 전용 접근테스트
-        mvc.perform(get("/api/v1/member/test2")
-                        .header("Authorization", "Bearer " + token))
-                .andDo(print());
-    }
-
 }

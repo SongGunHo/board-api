@@ -5,7 +5,7 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.http.HttpServletRequest;
-import org.song.global.excepotion.UnAuthorixzedException;
+import org.song.global.excepotion.UnAuthorizedException;
 import org.song.global.lib.Utis;
 import org.song.member.MemberInfo;
 import org.song.member.constants.Authority;
@@ -24,6 +24,8 @@ import org.springframework.util.StringUtils;
 import java.security.Key;
 import java.util.Date;
 import java.util.List;
+
+import static org.springframework.data.redis.core.convert.MappingRedisConverter.KeyspaceIdentifier.isValid;
 
 @Service
 @Lazy
@@ -114,6 +116,9 @@ public class TokenService {
     public void validate(String token){
         String errorCode = null;
         Exception error = null;
+        if (token == null || !isValid(token)) {
+            throw new UnAuthorizedException("message");
+        }
         try{
         Jwts.parser().setSigningKey(key).build().parseClaimsJws(token).getPayload();
         } catch (ExpiredJwtException e){// 토큰 만료
@@ -130,7 +135,7 @@ public class TokenService {
             error=e;
         }
         if(StringUtils.hasText(errorCode)){
-            throw new UnAuthorixzedException(utis.getMessage(errorCode));
+            throw new UnAuthorizedException(utis.getMessage(errorCode));
         }
             if(error != null){
                 error.printStackTrace();

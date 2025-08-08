@@ -13,17 +13,17 @@ import java.util.Map;
 public class CommonException extends RuntimeException{
 
     private final HttpStatus status;
-    private Map<String , List<String>> errorMessge;
+    private Map<String, List<String>> errorMessages;
     private boolean errorCode;
 
 
     public CommonException(String message , HttpStatus status){
         super(message);
-        this.status= status;
+        this.status = status;
     }
 
     public CommonException(Map<String, List<String>> errorMessge, HttpStatus status){
-        this.errorMessge = errorMessge;
+        this.errorMessages = errorMessages;
         this.status = status;
     }
 

@@ -7,24 +7,28 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.song.global.excepotion.BadRequestException;
 import org.song.global.lib.Utis;
+import org.song.member.entityes.Member;
 import org.song.member.jwt.TokenService;
+import org.song.member.libs.MemberUtil;
 import org.song.member.services.JoinService;
 import org.song.member.validators.JoinValidator;
 import org.song.member.validators.TokenValidator;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
 @Tag(name = "회원 api", description = "회원 가입 , 회원 인증 토큰 발급 기능 제공")
-@RequestMapping("/api/vi/member")
+@RequestMapping("/api/v1/member")
 public class MemberController {
     private final JoinService service;
     private final JoinValidator validator;
     private final Utis utis;
     private final TokenValidator token;
     private final TokenService tos;
+    private final MemberUtil memberUtil;
 
     // 회원 가입
     @Operation(summary = "회원 가입",  method = "Post")
@@ -54,4 +58,11 @@ public class MemberController {
         return tos.create(form.getEmail());
     }
 
+    @Operation(summary = "로그인 상태인 회원 정보를 조회", method = "GET")
+
+    @GetMapping //get / api/ v1/member
+    @PreAuthorize("isAuthenticated()")
+    public Member myinfo(){
+
+    }
 }

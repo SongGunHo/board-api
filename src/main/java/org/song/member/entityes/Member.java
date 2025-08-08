@@ -47,5 +47,9 @@ public class Member extends BaseEnitry implements Serializable {
 
 
     private LocalDateTime credentialChangedAt; // 비밀번호 변경 일시
+
+    private boolean isAdmin(){
+        return authority != null && authority == Authority.ADMIN;
+    }
 }
 

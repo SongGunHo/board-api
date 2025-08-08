@@ -13,13 +13,13 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.StringUtils;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@ActiveProfiles({""})
+@ActiveProfiles({"default", "test"})
 public class ControllerTest {
 
     @Autowired
@@ -78,10 +78,10 @@ public class ControllerTest {
                 .getResponse().getContentAsString(); // 응답 body 데이터를 반환
 
         assertTrue(StringUtils.hasText(token));
-//        // 회원전용, 관리자 전용 접근 테스트
-//        mockMvc.perform(get("/api/v1/member/test1")
-//                .header("Authorization", "Bearer " + token))
-//                .andDo(print());
+       // 회원전용, 관리자 전용 접근 테스트
+        mockMvc.perform(get("/api/v1/member/test1")
+                .header("Authorization", "Bearer " + token))
+                .andDo(print()).andExpect(status().isOk());
 
     }
 }

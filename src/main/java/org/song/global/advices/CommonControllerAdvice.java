@@ -25,7 +25,7 @@ public class CommonControllerAdvice {
 
         if (e instanceof CommonException commonException) {
             status = commonException.getStatus();
-            Map<String, List<String>> errorMessages = commonException.getErrorMessge(); // 커맨드 객체 검증 실패 메세지
+            Map<String, List<String>> errorMessages = commonException.getErrorMessages(); // 커맨드 객체 검증 실패 메세지
             if (errorMessages != null) {
                 message = errorMessages;
             } else {

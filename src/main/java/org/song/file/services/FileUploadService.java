@@ -1,18 +1,20 @@
 package org.song.file.services;
 
 import lombok.RequiredArgsConstructor;
-import org.antlr.v4.runtime.misc.Utils;
+import org.song.file.consteants.FileStruts;
 import org.song.file.controllers.RequestUpload;
+import org.song.file.exception.FileNotFoundException;
 import org.song.file.fileinfo.FileInfo;
 import org.song.file.repostiroy.FileInfoRepository;
 import org.song.global.configs.FileProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
 @Service
@@ -20,7 +22,6 @@ import java.util.*;
 @RequiredArgsConstructor
 @EnableConfigurationProperties(FileProperties.class)
 public class FileUploadService {
-    private final Utils utils;
     private final FileProperties properties;
     private final FileInfoRepository repository;
     private final FileInfoService infoService;
@@ -35,7 +36,7 @@ public class FileUploadService {
 
         MultipartFile[] files = form.getFiles();
         if (files == null || files.length == 0) { // 파일을 업로드 하지 않은 경우
-            throw new AlertBackException(utils.getMessage("NotUpload.file"), HttpStatus.BAD_REQUEST);
+            throw new FileNotFoundException();
         }
 
         // 하나의 파일만 업로드 하는 경우
@@ -106,7 +107,7 @@ public class FileUploadService {
      * @param gid
      */
     public void processDone(String gid) {
-        List<FileInfo> items = infoService.getList(gid, null, FileStatus.ALL);
+        List<FileInfo> items = infoService.getList(gid, null, FileStruts.ALL);
 
         items.forEach(item -> item.setDone(true));
 

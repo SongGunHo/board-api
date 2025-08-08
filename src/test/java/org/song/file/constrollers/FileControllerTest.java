@@ -1,6 +1,7 @@
 
 package org.song.file.constrollers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,6 +28,9 @@ public class FileControllerTest {
     @Autowired
     private FileUploadService service;
 
+    @Autowired
+    private ObjectMapper om;
+
     private MultipartFile file;
     private MultipartFile file1;
 
@@ -37,6 +41,7 @@ public class FileControllerTest {
         file1 = new MockMultipartFile("file", "image2.png", MediaType.IMAGE_PNG_VALUE, fis);
     }
     @Test
+
     @DisplayName("파일 업로드 테스트 ")
     void fileuploadTest() throws Exception{
         mvc.perform(multipart("/api/v1/file/upload").file(file).file(file1).param("gid", "testgid").param("location", "testLocation")).andDo(print()).andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8);

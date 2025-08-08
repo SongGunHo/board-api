@@ -22,13 +22,13 @@ public class ThumbnailService {
 
     public String create(RequestThumb form) {
         Long seq = form.getSeq();
-        String url = form.getUrl();
+//        String url = form.getUrl();
         int width = Math.max(form.getWidth(), 50);
         int height = Math.max(form.getHeight(), 50);
         boolean crop = form.isCrop();
 
         // 썸네일 경로, 이미 생성된 썸네일이 있다면 생성되어 있는 경로로 반환
-        String thumbPath = getThumbPath(seq, url, width, height, crop);
+        String thumbPath = getThumbPath(seq, width, height, crop);
         File file = new File(thumbPath);
         if (file.exists()) {
             return thumbPath;
@@ -36,6 +36,7 @@ public class ThumbnailService {
 
         // 썸네일 생성
         try {
+            String url = "";
             if (seq != null && seq > 0L) { // 파일 등록번호 기준에서 썸네일 생성
                 FileInfo item = infoService.get(seq);
                 Thumbnails.Builder<File> builder = Thumbnails.of(item.getFilePath())

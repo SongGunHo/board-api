@@ -1,6 +1,8 @@
 package org.song.member.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -49,12 +51,21 @@ public class MemberController {
      *
      * @return
      */
-    @GetMapping("/token")
-    public String token (@Valid @RequestBody RequestToken form , Errors errors){
+    @Operation(summary = "회원 인증 처리", description = "이메일과 비밀번호로 인증한 후 회원 전용 요청을 보낼수 있는 토큰(JWT)을 발급")
+    @Parameters({
+            @Parameter(name="email", required = true, description = "이메일"),
+            @Parameter(name="password", required = true, description = "비밀번호")
+    })
+    @ApiResponse(responseCode = "200", description = "인증 성공시 토큰(JWT)발급")
+    @PostMapping("/token")
+    public String token(@Valid @RequestBody RequestToken form, Errors errors) {
+
         token.validate(form, errors);
-        if(errors.hasErrors()){
+
+        if (errors.hasErrors()) {
             throw new BadRequestException(utis.getErrorMessages(errors));
         }
+
         return tos.create(form.getEmail());
     }
 
@@ -63,6 +74,6 @@ public class MemberController {
     @GetMapping //get / api/ v1/member
     @PreAuthorize("isAuthenticated()")
     public Member myinfo(){
-
+        return memberUtil.getMember();
     }
 }
